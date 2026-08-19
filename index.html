@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ENACTUS BUC — Closing Ceremony | Check-In</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ambient background: repeated ghost wordmark, matching the logo's own backdrop -->
+  <div class="bg-field" aria-hidden="true">
+    <div class="bg-row">ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC</div>
+    <div class="bg-row">ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC</div>
+    <div class="bg-row">ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC</div>
+    <div class="bg-row">ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC</div>
+    <div class="bg-row">ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC</div>
+    <div class="bg-row">ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC&nbsp;ENACTUS&nbsp;BUC</div>
+  </div>
+  <div class="bg-glow"></div>
+
+  <div class="page">
+
+    <!-- Header -->
+    <header class="header">
+      <img src="assets/logo.png" alt="Enactus BUC" class="logo" />
+      <p class="eyebrow">ENACTUS BUC · SEASON WRAP-UP</p>
+      <h1 class="title">CLOSING<br>CEREMONY</h1>
+      <p class="subtitle">امسح الـ QR Code اللي وصلك بالإيميل للدخول</p>
+    </header>
+
+    <!-- Scanner -->
+    <main class="scanner-zone">
+      <div class="frame" id="frame">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+
+        <div id="reader"></div>
+
+        <svg class="swoosh" viewBox="0 0 300 300" aria-hidden="true">
+          <path id="swooshPath" d="M 20 170 C 70 230, 110 110, 150 150 C 180 180, 190 90, 260 70"
+                fill="none" stroke="url(#swooshGrad)" stroke-width="6" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="swooshGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#2F5FCE" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#5B8CFF" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#2F5FCE" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div class="scan-glow"></div>
+      </div>
+
+      <p class="hint" id="hint">وجّه الكاميرا ناحية الكود</p>
+
+      <button class="restart-btn" id="restartBtn" hidden>إعادة تشغيل الكاميرا</button>
+    </main>
+
+  </div>
+
+  <!-- Result bottom sheet -->
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-icon" id="sheetIcon"></div>
+    <h2 class="sheet-status" id="sheetStatus"></h2>
+    <p class="sheet-name" id="sheetName"></p>
+    <p class="sheet-message" id="sheetMessage"></p>
+    <div class="sheet-bar"><div class="sheet-bar-fill" id="sheetBarFill"></div></div>
+  </div>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

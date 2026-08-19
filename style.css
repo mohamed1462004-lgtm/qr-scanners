@@ -1,0 +1,373 @@
+/* ============================================================
+   ENACTUS BUC — Closing Ceremony Check-In
+   Token system
+   ============================================================ */
+:root{
+  --navy-deep:   #071230;
+  --navy-mid:    #0F2255;
+  --navy-soft:   #17306E;
+  --gold:        #F5E1A0;
+  --gold-bright: #FFD873;
+  --blue-sig:    #2F5FCE;
+  --blue-bright: #5B8CFF;
+  --green:       #3ECF8E;
+  --red:         #FF5D5D;
+  --ink:         #EDEEF6;
+
+  --font-display: 'Anton', sans-serif;
+  --font-body: 'Cairo', sans-serif;
+}
+
+*{ box-sizing: border-box; margin:0; padding:0; }
+
+html,body{
+  height:100%;
+  background: var(--navy-deep);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body{
+  min-height:100dvh;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---------------- Ambient background ---------------- */
+.bg-field{
+  position:fixed; inset:0;
+  z-index:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-evenly;
+  transform: rotate(-8deg) scale(1.3);
+  opacity:0.05;
+  pointer-events:none;
+}
+.bg-row{
+  white-space:nowrap;
+  font-family: var(--font-display);
+  font-size: 8vw;
+  letter-spacing: 2px;
+  color: var(--gold);
+}
+
+.bg-glow{
+  position:fixed;
+  inset:-20%;
+  z-index:0;
+  background:
+    radial-gradient(circle at 50% 15%, rgba(47,95,206,0.35), transparent 55%),
+    radial-gradient(circle at 85% 80%, rgba(245,225,160,0.08), transparent 50%);
+  pointer-events:none;
+}
+
+/* ---------------- Layout ---------------- */
+.page{
+  position:relative;
+  z-index:1;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding: 28px 20px 40px;
+  max-width: 520px;
+  margin: 0 auto;
+  width:100%;
+}
+
+/* ---------------- Header ---------------- */
+.header{
+  text-align:center;
+  margin-bottom: 18px;
+}
+
+.logo{
+  width: min(58vw, 260px);
+  filter: drop-shadow(0 0 26px rgba(47,95,206,0.45));
+  margin-bottom: 6px;
+  animation: floatIn 900ms cubic-bezier(.2,.9,.25,1) both;
+}
+
+.eyebrow{
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-size: 11px;
+  color: var(--blue-bright);
+  text-transform: uppercase;
+  opacity:0;
+  animation: fadeUp 700ms ease 200ms forwards;
+}
+
+.title{
+  font-family: var(--font-display);
+  font-size: clamp(34px, 10vw, 54px);
+  line-height: 0.95;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin: 6px 0 10px;
+  text-shadow: 0 0 30px rgba(245,225,160,0.25);
+  opacity:0;
+  animation: fadeUp 700ms ease 320ms forwards;
+}
+
+.subtitle{
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  opacity:0;
+  animation: fadeUp 700ms ease 440ms forwards;
+}
+
+@keyframes floatIn{
+  from{ opacity:0; transform: translateY(-14px) scale(.94); }
+  to{ opacity:1; transform: translateY(0) scale(1); }
+}
+@keyframes fadeUp{
+  from{ opacity:0; transform: translateY(10px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+/* ---------------- Scanner ---------------- */
+.scanner-zone{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-top: 10px;
+}
+
+.frame{
+  position:relative;
+  width: min(82vw, 340px);
+  height: min(82vw, 340px);
+  border-radius: 28px;
+  overflow:hidden;
+  background: var(--navy-mid);
+  box-shadow:
+    0 0 0 1px rgba(245,225,160,0.12),
+    0 24px 60px -20px rgba(0,0,0,0.7),
+    0 0 60px -10px rgba(47,95,206,0.35);
+  opacity:0;
+  animation: fadeUp 700ms ease 560ms forwards;
+}
+
+#reader{
+  width:100% !important;
+  height:100% !important;
+}
+#reader video{
+  width:100% !important;
+  height:100% !important;
+  object-fit: cover;
+}
+/* hide the library's default chrome so our frame owns the look */
+#reader__scan_region{ border:none !important; }
+#reader__dashboard{ display:none !important; }
+#reader img{ display:none !important; }
+
+.corner{
+  position:absolute;
+  width: 34px; height: 34px;
+  border: 4px solid var(--gold-bright);
+  z-index:3;
+  filter: drop-shadow(0 0 8px rgba(255,216,115,0.6));
+}
+.corner.tl{ top:14px; left:14px; border-right:none; border-bottom:none; border-radius: 10px 0 0 0; }
+.corner.tr{ top:14px; right:14px; border-left:none; border-bottom:none; border-radius: 0 10px 0 0; }
+.corner.bl{ bottom:14px; left:14px; border-right:none; border-top:none; border-radius: 0 0 0 10px; }
+.corner.br{ bottom:14px; right:14px; border-left:none; border-top:none; border-radius: 0 0 10px 0; }
+
+/* Signature swoosh — echoes the calligraphy stroke in the logo, sweeping the frame */
+.swoosh{
+  position:absolute;
+  inset:0;
+  width:100%; height:100%;
+  z-index:2;
+  pointer-events:none;
+  animation: swooshSweep 2600ms ease-in-out infinite;
+}
+#swooshPath{
+  stroke-dasharray: 240;
+  stroke-dashoffset: 240;
+  animation: swooshDraw 2600ms ease-in-out infinite;
+}
+@keyframes swooshDraw{
+  0%{ stroke-dashoffset: 240; opacity:0; }
+  15%{ opacity:1; }
+  50%{ stroke-dashoffset: 0; opacity:1; }
+  80%{ opacity:1; }
+  100%{ stroke-dashoffset: -240; opacity:0; }
+}
+@keyframes swooshSweep{
+  0%{ transform: translateY(-6%); }
+  50%{ transform: translateY(6%); }
+  100%{ transform: translateY(-6%); }
+}
+
+.scan-glow{
+  position:absolute; inset:0;
+  z-index:1;
+  background: linear-gradient(180deg, transparent 0%, rgba(47,95,206,0.18) 50%, transparent 100%);
+  animation: glowSweep 2600ms ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes glowSweep{
+  0%{ transform: translateY(-40%); }
+  50%{ transform: translateY(40%); }
+  100%{ transform: translateY(-40%); }
+}
+
+.frame.frozen .swoosh,
+.frame.frozen .scan-glow{ animation-play-state: paused; opacity:0.15; }
+
+.hint{
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(237,238,246,0.7);
+  opacity:0;
+  animation: fadeUp 700ms ease 680ms forwards;
+}
+
+.restart-btn{
+  margin-top: 16px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(245,225,160,0.4);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  cursor:pointer;
+  transition: background 200ms ease, transform 150ms ease;
+}
+.restart-btn:active{ transform: scale(0.96); }
+.restart-btn:hover{ background: rgba(245,225,160,0.08); }
+
+/* ---------------- Result sheet ---------------- */
+.sheet-backdrop{
+  position:fixed; inset:0;
+  background: rgba(4,9,26,0.55);
+  backdrop-filter: blur(2px);
+  z-index:9;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 260ms ease;
+}
+.sheet-backdrop.show{ opacity:1; pointer-events:auto; }
+
+.sheet{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  z-index:10;
+  background: linear-gradient(180deg, var(--navy-soft), var(--navy-mid));
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -10px 50px rgba(0,0,0,0.5);
+  padding: 14px 28px 40px;
+  text-align:center;
+  transform: translateY(110%);
+  transition: transform 420ms cubic-bezier(.2,.9,.25,1);
+  border-top: 1px solid rgba(245,225,160,0.15);
+}
+.sheet.show{ transform: translateY(0); }
+.sheet.shake{ animation: shake 420ms ease; }
+@keyframes shake{
+  0%,100%{ transform: translateY(0) translateX(0); }
+  20%{ transform: translateY(0) translateX(-8px); }
+  40%{ transform: translateY(0) translateX(7px); }
+  60%{ transform: translateY(0) translateX(-5px); }
+  80%{ transform: translateY(0) translateX(3px); }
+}
+
+.sheet-handle{
+  width: 44px; height: 5px;
+  border-radius: 999px;
+  background: rgba(245,225,160,0.3);
+  margin: 0 auto 18px;
+}
+
+.sheet-icon{
+  width: 76px; height: 76px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 38px;
+  animation: popIn 420ms cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn{
+  from{ opacity:0; transform: scale(0.4); }
+  to{ opacity:1; transform: scale(1); }
+}
+
+.sheet-status{
+  font-family: var(--font-display);
+  letter-spacing: 1px;
+  font-size: 26px;
+  margin-bottom: 4px;
+}
+.sheet-name{
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.sheet-message{
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(237,238,246,0.75);
+}
+
+.sheet-bar{
+  margin-top: 20px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(237,238,246,0.12);
+  overflow:hidden;
+}
+.sheet-bar-fill{
+  height:100%;
+  width:100%;
+  background: currentColor;
+  transform-origin: left;
+  transform: scaleX(1);
+  transition: transform linear;
+}
+
+/* status color themes */
+.sheet.valid .sheet-icon{ background: rgba(62,207,142,0.15); color: var(--green); box-shadow: 0 0 30px rgba(62,207,142,0.35); }
+.sheet.valid .sheet-status{ color: var(--green); }
+.sheet.valid .sheet-bar-fill{ color: var(--green); }
+
+.sheet.used .sheet-icon{ background: rgba(255,216,115,0.15); color: var(--gold-bright); box-shadow: 0 0 30px rgba(255,216,115,0.3); }
+.sheet.used .sheet-status{ color: var(--gold-bright); }
+.sheet.used .sheet-bar-fill{ color: var(--gold-bright); }
+
+.sheet.invalid .sheet-icon{ background: rgba(255,93,93,0.15); color: var(--red); box-shadow: 0 0 30px rgba(255,93,93,0.3); }
+.sheet.invalid .sheet-status{ color: var(--red); }
+.sheet.invalid .sheet-bar-fill{ color: var(--red); }
+
+.sheet.error .sheet-icon{ background: rgba(255,93,93,0.15); color: var(--red); }
+.sheet.error .sheet-status{ color: var(--red); }
+.sheet.error .sheet-bar-fill{ color: var(--red); }
+
+/* ---------------- Confetti ---------------- */
+#confetti{
+  position:fixed; inset:0;
+  z-index:11;
+  pointer-events:none;
+}
+
+/* ---------------- Small screens ---------------- */
+@media (max-width: 360px){
+  .title{ font-size: 30px; }
+  .logo{ width: 62vw; }
+}
