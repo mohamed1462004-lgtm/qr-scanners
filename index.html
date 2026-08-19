@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 16px; }
+    #reader { width: 100%; max-width: 400px; margin: 0 auto; }
+    #result {
+      margin-top: 20px; padding: 24px; border-radius: 12px;
+      font-size: 22px; font-weight: bold; display: none;
+    }
+    .valid { background: #d4edda; color: #155724; }
+    .used { background: #fff3cd; color: #856404; }
+    .invalid { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <h2>سكانر تسجيل الحضور</h2>
+  <div id="reader"></div>
+  <div id="result"></div>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script>
+    // حط هنا لينك الـ /exec بتاع Apps Script
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzIrgIG6qijrEUdUl_C_AvBPMYSZTNmkQulmVwoDBJ5XDk-lQa4AgG9Jt-ou9t-sVKUuA/exec";
+
+    let scanning = true;
+
+    function onScanSuccess(decodedText) {
+      if (!scanning) return;
+      scanning = false;
+      fetch(APPS_SCRIPT_URL + "?code=" + encodeURIComponent(decodedText))
+        .then(res => res.json())
+        .then(showResult)
+        .catch(err => {
+          document.getElementById('reader').innerHTML =
+            "<p style='color:red'>مشكلة في الاتصال: " + err + "</p>";
+        });
+    }
+
+    function showResult(res) {
+      const box = document.getElementById('result');
+      box.style.display = 'block';
+      box.className = res.status;
+      if (res.status === 'valid') {
+        box.innerHTML = "✅ تمام<br>" + (res.name || "") + "<br>أول دخول";
+      } else if (res.status === 'used') {
+        box.innerHTML = "⚠️ التيكت ده اتستخدم قبل كده<br>" + (res.name || "");
+      } else {
+        box.innerHTML = "❌ كود مش موجود";
+      }
+      setTimeout(() => {
+        box.style.display = 'none';
+        scanning = true;
+      }, 3000);
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      onScanSuccess
+    ).catch(err => {
+      document.getElementById('reader').innerHTML =
+        "<p style='color:red;font-weight:bold'>مشكلة في تشغيل الكاميرا:<br>" + err + "</p>";
+    });
+  </script>
+</body>
+</html>
