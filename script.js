@@ -51,7 +51,7 @@ function startScanner() {
 
 function onScanSuccess(decodedText) {
   if (isBusy) return; // ignore repeated triggers while we're handling one
-   (قبل isBusy = true;): alert("الكود اللي اتقرى: [" + decodedText + "]"); 
+   alert("الكود اللي اتقرى: [" + decodedText + "]");
   isBusy = true;
   frameEl.classList.add('frozen');
   hintEl.textContent = "بنتأكد من التذكرة...";
