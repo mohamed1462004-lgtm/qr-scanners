@@ -7,7 +7,7 @@
 
 // ---- CONFIG -------------------------------------------------
 // Paste your Apps Script Web App /exec URL here.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZT5t9aT57dTS3RepZ1QLwg4ZDM-suslrkYbYtWsT51wGeC4uBuGWkflH_tCVi-zFyxg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIUlACbJSQ4hZNkgB-cTQLOBRinF-is3oVuObqoNAI61NgPB1eYSUkBKii7T7aWXDgKg/exec";
 
 // How long the result sheet stays open before the camera resumes
 const RESULT_DISPLAY_MS = 3200;
