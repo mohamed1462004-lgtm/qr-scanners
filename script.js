@@ -5,9 +5,25 @@
    to avoid the CORS/redirect issue the Apps Script API has).
    ============================================================ */
 
-// ---- CONFIG -------------------------------------------------
-// Paste your Apps Script Web App /exec URL here.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIUlACbJSQ4hZNkgB-cTQLOBRinF-is3oVuObqoNAI61NgPB1eYSUkBKii7T7aWXDgKg/exec";
+// ---- EVENTS: كل حفلة ليها اسم ورابط Apps Script بتاعها ----
+const EVENTS = {
+  opening: {
+    name: "OPENING CEREMONY",
+    eyebrow: "ENACTUS BUC",
+    url: "https://script.google.com/macros/s/AKfycbye-qtxE-xvKol0xFCBQzyTI0kZmnqEB53j1oJe-c5cwoKHZqqwILeRdxdV_jEEK9FmZQ/exec"
+  },
+  closing: {
+    name: "CLOSING CEREMONY",
+    eyebrow: "ENACTUS BUC · SEASON WRAP-UP",
+    url: "https://script.google.com/macros/s/AKfycbwIUlACbJSQ4hZNkgB-cTQLOBRinF-is3oVuObqoNAI61NgPB1eYSUkBKii7T7aWXDgKg/exec"
+  }
+};
+const DEFAULT_EVENT = "opening";
+
+// الحفلة بتتحدد من الرابط: ...?event=closing  (من غيرها بيفتح الافتراضية)
+const eventKey = new URLSearchParams(location.search).get("event") || DEFAULT_EVENT;
+const EVENT = EVENTS[eventKey] || EVENTS[DEFAULT_EVENT];
+const APPS_SCRIPT_URL = EVENT.url;
 
 // How long the result sheet stays open before the camera resumes
 const RESULT_DISPLAY_MS = 3200;
@@ -51,7 +67,6 @@ function startScanner() {
 
 function onScanSuccess(decodedText) {
   if (isBusy) return; // ignore repeated triggers while we're handling one
-   alert("الكود اللي اتقرى: [" + decodedText + "]");
   isBusy = true;
   frameEl.classList.add('frozen');
   hintEl.textContent = "بنتأكد من التذكرة...";
@@ -253,4 +268,10 @@ window.addEventListener('resize', () => {
 });
 
 // ---- Go -----------------------------------------------------
+document.title = EVENT.name + " | Check-In";
+const eventTitleEl = document.getElementById('eventTitle');
+const eventEyebrowEl = document.getElementById('eventEyebrow');
+if (eventTitleEl) eventTitleEl.innerHTML = EVENT.name.replace(" ", "<br>");
+if (eventEyebrowEl) eventEyebrowEl.textContent = EVENT.eyebrow;
+
 startScanner();
